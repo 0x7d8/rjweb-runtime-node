@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "module": "CommonJS",
+    "lib": ["ES2022"],
+    "pretty": true,
+    "resolveJsonModule": true,
+    "emitDeclarationOnly": false,
+    "skipLibCheck": true,
+    "declaration": false,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "target": "ES2021",
+    "outDir": "lib/typings",
+    "paths": {
+      "@/*": ["./src/*"]
+    }, "plugins": [
+      {
+        "transform": "tsc-progress",
+        "title": "TSC"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": false
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

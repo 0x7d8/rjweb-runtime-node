@@ -1,0 +1,54 @@
+{
+  "name": "@rjweb/runtime-node",
+  "version": "1.0.0",
+  "description": "rjweb-server runtime for node using http and ws",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/typings/index.d.ts",
+  "scripts": {
+    "build:esm": "ttsc --outDir lib/esm --module ESNext && mv lib/esm/src/* lib/esm && rm -rf lib/esm/src",
+    "build:cjs": "ttsc --outDir lib/cjs --module CommonJS && mv lib/cjs/src/* lib/cjs && rm -rf lib/cjs/src",
+    "build:typings": "ttsc --outDir lib/typings --emitDeclarationOnly --declaration && mv lib/typings/src/* lib/typings && rm -rf lib/typings/src",
+    "build:full": "rm -rf lib && pnpm run build:esm & pnpm run build:cjs & pnpm run build:typings && wait && sed -i -e 's|\"package.json\"|\"./package.json\"|' lib/**/*.js && echo \"Size $(du -sh lib)\"",
+    "run:test": "bun run test/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0x7d8/rjweb-runtime-node.git"
+  },
+  "keywords": [
+    "webserver",
+    "web-server",
+    "lightweight",
+    "server",
+    "restful",
+    "rest",
+    "node",
+    "http",
+    "easy",
+    "api",
+    "web",
+    "backend"
+  ],
+  "author": "0x7d8 (0x4096 / Robert Jansen)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/0x7d8/NPM_WEB-SERVER/issues"
+  },
+  "homepage": "https://github.com/0x7d8/NPM_WEB-SERVER#readme",
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/ws": "^8.5.10",
+    "rjweb-server": "^9.0.0",
+    "tsc-progress": "^1.0.4",
+    "ttsc": "^0.3.1",
+    "typedoc": "^0.24.8",
+    "typescript": "^5.4.4",
+    "typescript-transform-paths": "^3.4.7"
+  },
+  "dependencies": {
+    "@rjweb/utils": "^1.12.7",
+    "bufferutil": "^4.0.8",
+    "ws": "^8.16.0"
+  }
+}
