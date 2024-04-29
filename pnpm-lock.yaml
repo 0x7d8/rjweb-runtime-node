@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   '@rjweb/utils':
-    specifier: ^1.12.7
-    version: 1.12.7
+    specifier: ^1.12.12
+    version: 1.12.12
   bufferutil:
     specifier: ^4.0.8
     version: 4.0.8
   ws:
-    specifier: ^8.16.0
-    version: 8.16.0(bufferutil@4.0.8)
+    specifier: ^8.17.0
+    version: 8.17.0(bufferutil@4.0.8)
 
 devDependencies:
   '@types/node':
@@ -23,23 +23,23 @@ devDependencies:
     specifier: ^8.5.10
     version: 8.5.10
   rjweb-server:
-    specifier: ^9.0.0
-    version: 9.0.0
+    specifier: ^9.2.6
+    version: 9.2.6
   tsc-progress:
     specifier: ^1.0.4
-    version: 1.0.4(typescript@5.4.4)
+    version: 1.0.4(typescript@5.4.5)
   ttsc:
     specifier: ^0.3.1
-    version: 0.3.1(ts-node@10.9.2)(typescript@5.4.4)
+    version: 0.3.1(ts-node@10.9.2)(typescript@5.4.5)
   typedoc:
     specifier: ^0.24.8
-    version: 0.24.8(typescript@5.4.4)
+    version: 0.24.8(typescript@5.4.5)
   typescript:
-    specifier: ^5.4.4
-    version: 5.4.4
+    specifier: ^5.4.5
+    version: 5.4.5
   typescript-transform-paths:
     specifier: ^3.4.7
-    version: 3.4.7(typescript@5.4.4)
+    version: 3.4.7(typescript@5.4.5)
 
 packages:
 
@@ -48,6 +48,11 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+    dev: true
+
+  /@inquirer/figures@1.0.1:
+    resolution: {integrity: sha512-mtup3wVKia3ZwULPHcbs4Mor8Voi+iIXEWD7wCNbIO6lYR62oPCTQyrddi5OMYVXHzeCSoneZwJuS8sBvlEwDw==}
+    engines: {node: '>=18'}
     dev: true
 
   /@jridgewell/resolve-uri@3.1.2:
@@ -73,8 +78,8 @@ packages:
       call-bind: 1.0.7
     dev: true
 
-  /@rjweb/utils@1.12.7:
-    resolution: {integrity: sha512-c7kdR3uINZJVXg3O6WrYFvE4Lmu9M7mRD+vBw9dkBhP8yYqF+AzFlxkOYaoA5cf4E1NxR8ERifJ6dpHn9YMSWQ==}
+  /@rjweb/utils@1.12.12:
+    resolution: {integrity: sha512-5jxouObI8f5G7t7l5kUQwNcdeL7IBZFe47Lzen3/e7WMe8HrvUsPyRj0CXFgZ3l1GaN0b/GkkztnN3Xw317q7A==}
     engines: {node: '>=18.0.0'}
     dependencies:
       ts-arithmetic: 0.1.1
@@ -398,17 +403,17 @@ packages:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: true
 
-  /inquirer@9.2.17:
-    resolution: {integrity: sha512-Vr3Ia2ud5sGnioURkE69endl4SkeJcMzTF6SosKcX5GALJfId7C+JvO5ZZb6y1LOXnEofCPbwzoQ1q0e8Gaduw==}
+  /inquirer@9.2.20:
+    resolution: {integrity: sha512-SFwJJPS+Ms75NV+wzFBHjirG4z3tzvis31h+9NyH1tqjIu2c7vCavlXILZ73q/nPYy8/aw4W+DNzLH5MjfYXiA==}
     engines: {node: '>=18'}
     dependencies:
+      '@inquirer/figures': 1.0.1
       '@ljharb/through': 2.3.13
       ansi-escapes: 4.3.2
       chalk: 5.3.0
       cli-cursor: 3.1.0
       cli-width: 4.1.0
       external-editor: 3.1.0
-      figures: 3.2.0
       lodash: 4.17.21
       mute-stream: 1.0.0
       ora: 5.4.1
@@ -512,7 +517,7 @@ packages:
   /openapi3-ts@4.3.1:
     resolution: {integrity: sha512-ha/kTOLhMQL7MvS9Abu/cpCXx5qwHQ++88YkUzn1CGfmM8JvCOG/4ZE6tRsexgXRFaoJrcwLyf81H2Y/CXALtA==}
     dependencies:
-      yaml: 2.4.1
+      yaml: 2.4.2
     dev: true
 
   /ora@5.4.1:
@@ -579,15 +584,15 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
-  /rjweb-server@9.0.0:
-    resolution: {integrity: sha512-petA4WmYdPjbc7YrW3X1o6UkBvmLCr/GjiF1OYEKdFWB4/PoD6nCXOpdMKJEscVIYVX79rvxT5LURJmDlH5a7A==}
+  /rjweb-server@9.2.6:
+    resolution: {integrity: sha512-O4RJIjlZYLjyj77pNp9lemrGMFP6wutGjqxoHYvIsRHwj3MG5ID5vNo/mM5lVYUxIXHLA85QE2/qGsfHMk0Yhg==}
     hasBin: true
     dependencies:
-      '@rjweb/utils': 1.12.7
-      inquirer: 9.2.17
+      '@rjweb/utils': 1.12.12
+      inquirer: 9.2.20
       openapi3-ts: 4.3.1
       yargs: 17.7.2
-      zod: 3.22.4
+      zod: 3.23.4
     dev: true
 
   /run-async@3.0.0:
@@ -678,7 +683,7 @@ packages:
   /ts-arithmetic@0.1.1:
     resolution: {integrity: sha512-3VqgsRgzaYfj+zKWn+7O66ifHwbOOnT2BoOrHwdEUBz7az0DetoZOS20+juNJh1klgzvWEi2Qxden41pomOUAQ==}
 
-  /ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.4):
+  /ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -704,12 +709,12 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.4.4
+      typescript: 5.4.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
 
-  /tsc-progress@1.0.4(typescript@5.4.4):
+  /tsc-progress@1.0.4(typescript@5.4.5):
     resolution: {integrity: sha512-x3a+n9YXy82M3nmwqpnerYkKCSY4vNAnOtkhg9t2x0vyWbSrzB++MaMTV7UQpnaVgnH5WNUKF5QtchGt3ggRQA==}
     peerDependencies:
       typescript: '*'
@@ -719,7 +724,7 @@ packages:
       markdown-table: 3.0.3
       picocolors: 1.0.0
       pretty-time: 1.1.0
-      typescript: 5.4.4
+      typescript: 5.4.5
       wrap-ansi: 7.0.0
     dev: true
 
@@ -727,7 +732,7 @@ packages:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
     dev: true
 
-  /ttsc@0.3.1(ts-node@10.9.2)(typescript@5.4.4):
+  /ttsc@0.3.1(ts-node@10.9.2)(typescript@5.4.5):
     resolution: {integrity: sha512-3l5bxt8xRc/0Yty9QiF8iPG9lk/FLwiHNU/CkFQUZ82WoxCBKk1HgBQ9GSuiQfn0up+ou5f8tHMlh9kGFOO1Vg==}
     hasBin: true
     peerDependencies:
@@ -735,8 +740,8 @@ packages:
       typescript: '>=3.2.2'
     dependencies:
       resolve: 1.22.8
-      ts-node: 10.9.2(@types/node@20.12.7)(typescript@5.4.4)
-      typescript: 5.4.4
+      ts-node: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+      typescript: 5.4.5
     dev: true
 
   /type-fest@0.21.3:
@@ -744,7 +749,7 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /typedoc@0.24.8(typescript@5.4.4):
+  /typedoc@0.24.8(typescript@5.4.5):
     resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
     engines: {node: '>= 14.14'}
     hasBin: true
@@ -755,20 +760,20 @@ packages:
       marked: 4.3.0
       minimatch: 9.0.4
       shiki: 0.14.7
-      typescript: 5.4.4
+      typescript: 5.4.5
     dev: true
 
-  /typescript-transform-paths@3.4.7(typescript@5.4.4):
+  /typescript-transform-paths@3.4.7(typescript@5.4.5):
     resolution: {integrity: sha512-1Us1kdkdfKd2unbkBAOV2HHRmbRBYpSuk9nJ7cLD2hP4QmfToiM/VpxNlhJc1eezVwVqSKSBjNSzZsK/fWR/9A==}
     peerDependencies:
       typescript: '>=3.6.5'
     dependencies:
       minimatch: 3.1.2
-      typescript: 5.4.4
+      typescript: 5.4.5
     dev: true
 
-  /typescript@5.4.4:
-    resolution: {integrity: sha512-dGE2Vv8cpVvw28v8HCPqyb08EzbBURxDpuhJvTrusShUfGnhHBafDsLdS1EhhxyL6BJQE+2cT3dDPAv+MQ6oLw==}
+  /typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -817,8 +822,8 @@ packages:
       strip-ansi: 6.0.1
     dev: true
 
-  /ws@8.16.0(bufferutil@4.0.8):
-    resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
+  /ws@8.17.0(bufferutil@4.0.8):
+    resolution: {integrity: sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -837,8 +842,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /yaml@2.4.1:
-    resolution: {integrity: sha512-pIXzoImaqmfOrL7teGUBt/T7ZDnyeGBWyXQBvOVhLkWLN37GXv8NMLK406UY6dS51JfcQHsmcW5cJ441bHg6Lg==}
+  /yaml@2.4.2:
+    resolution: {integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==}
     engines: {node: '>= 14'}
     hasBin: true
     dev: true
@@ -866,6 +871,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /zod@3.22.4:
-    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+  /zod@3.23.4:
+    resolution: {integrity: sha512-/AtWOKbBgjzEYYQRNfoGKHObgfAZag6qUJX1VbHo2PRBgS+wfWagEY2mizjfyAPcGesrJOcx/wcl0L9WnVrHFw==}
     dev: true

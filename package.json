@@ -1,6 +1,6 @@
 {
   "name": "@rjweb/runtime-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "rjweb-server runtime for node using http and ws",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
@@ -39,16 +39,16 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "@types/ws": "^8.5.10",
-    "rjweb-server": "^9.0.0",
+    "rjweb-server": "^9.2.6",
     "tsc-progress": "^1.0.4",
     "ttsc": "^0.3.1",
     "typedoc": "^0.24.8",
-    "typescript": "^5.4.4",
+    "typescript": "^5.4.5",
     "typescript-transform-paths": "^3.4.7"
   },
   "dependencies": {
-    "@rjweb/utils": "^1.12.7",
+    "@rjweb/utils": "^1.12.12",
     "bufferutil": "^4.0.8",
-    "ws": "^8.16.0"
+    "ws": "^8.17.0"
   }
 }
