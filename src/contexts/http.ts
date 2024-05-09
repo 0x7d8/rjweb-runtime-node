@@ -20,7 +20,7 @@ export class HttpContext extends ImplementationHttpContext {
 	private abortController = new AbortController()
 	private statusCode = 200
 	private statusMessage = 'OK'
-	private responseHeaders: [ string, string ][] = []
+	private responseHeaders: Record<string, string[]> = {}
 
 	constructor(private req: IncomingMessage, private res: (ServerResponse<IncomingMessage> & { req: IncomingMessage }) | Duplex, private server: WebSocketServer, private serve: Serve, private head: Buffer | null) {
 		super()
@@ -85,7 +85,7 @@ export class HttpContext extends ImplementationHttpContext {
 	}
 
 	public header(key: string, value: string): this {
-		this.responseHeaders.push([ key, value ])
+		this.responseHeaders[key] = [ ...this.responseHeaders[key] ?? [], value ]
 
 		return this
 	}
@@ -96,19 +96,21 @@ export class HttpContext extends ImplementationHttpContext {
 		this.res.cork()
 
 		this.compressionHeader(data instanceof Readable)
-		this.responseHeaders.splice(this.responseHeaders.findIndex(([ key ]) => key === 'content-length'), 1)
+		delete this.responseHeaders['content-length']
 
 		if (this.res instanceof Duplex) {
 			this.res.write(`HTTP/1.1 ${this.statusCode} ${this.statusMessage}\r\n`)
-			for (const [ key, value ] of this.responseHeaders) {
-				this.res.write(`${key}: ${value}\r\n`)
+			for (const [ key, values ] of Object.entries(this.responseHeaders)) {
+				for (const value of values) {
+					this.res.write(`${key}: ${value}\r\n`)
+				}
 			}
 
 			if (!this.getCompression() && data instanceof ArrayBuffer) this.res.write(`content-length: ${data.byteLength}\r\n\r\n`)
 
 			this.res.write('\r\n')
 		} else {
-			if (compressed instanceof Buffer) this.responseHeaders.push([ 'content-length', compressed.byteLength.toString() ])
+			if (compressed instanceof Buffer) this.responseHeaders['content-length'] = [ compressed.byteLength.toString() ]
 
 			this.res.writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
 		}
@@ -125,13 +127,15 @@ export class HttpContext extends ImplementationHttpContext {
 
 	public writeFile(file: string, start?: number, end?: number): void {
 		this.compressionHeader(true)
-		this.responseHeaders.splice(this.responseHeaders.findIndex(([ key ]) => key === 'content-length'), 1)
+		delete this.responseHeaders['content-length']
 
 		if (this.res instanceof Duplex) {
 			this.res.cork()
 			this.res.write(`HTTP/1.1 ${this.statusCode} ${this.statusMessage}\r\n`)
-			for (const [ key, value ] of this.responseHeaders) {
-				this.res.write(`${key}: ${value}\r\n`)
+			for (const [ key, values ] of Object.entries(this.responseHeaders)) {
+				for (const value of values) {
+					this.res.write(`${key}: ${value}\r\n`)
+				}
 			}
 
 			this.res.write('\r\n')
@@ -151,8 +155,10 @@ export class HttpContext extends ImplementationHttpContext {
 			headerListener = (headers: string[]) => {
 				if (as<{ ID: number }>(this.req).ID !== id) return
 		
-				for (const [ key, value ] of this.responseHeaders) {
-					headers.push(`${key}: ${value}`)
+				for (const [ key, values ] of Object.entries(this.responseHeaders)) {
+					for (const value of values) {
+						headers.push(`${key}: ${value}`)
+					}
 				}
 
 				this.server.off('headers', headerListener)

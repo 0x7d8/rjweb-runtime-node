@@ -1,6 +1,6 @@
 {
   "name": "@rjweb/runtime-node",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "rjweb-server runtime for node using http and ws",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
