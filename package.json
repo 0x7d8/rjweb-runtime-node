@@ -1,6 +1,6 @@
 {
   "name": "@rjweb/runtime-node",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "rjweb-server runtime for node using http and ws",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
@@ -37,9 +37,9 @@
   },
   "homepage": "https://github.com/0x7d8/NPM_WEB-SERVER#readme",
   "devDependencies": {
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.11",
     "@types/ws": "^8.5.10",
-    "rjweb-server": "^9.2.6",
+    "rjweb-server": "^9.5.0",
     "tsc-progress": "^1.0.4",
     "ttsc": "^0.3.1",
     "typedoc": "^0.24.8",
@@ -47,7 +47,7 @@
     "typescript-transform-paths": "^3.4.7"
   },
   "dependencies": {
-    "@rjweb/utils": "^1.12.12",
+    "@rjweb/utils": "^1.12.13",
     "bufferutil": "^4.0.8",
     "ws": "^8.17.0"
   }

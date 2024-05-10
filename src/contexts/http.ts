@@ -94,9 +94,13 @@ export class HttpContext extends ImplementationHttpContext {
 		const compressed = data instanceof ArrayBuffer ? await compressionSync(this.getCompression(), data) : null
 
 		this.res.cork()
-
 		this.compressionHeader(data instanceof Readable)
-		delete this.responseHeaders['content-length']
+
+		if (this.responseHeaders['content-length']) {
+			const old = this.responseHeaders['content-length']
+			delete this.responseHeaders['content-length']
+			this.responseHeaders['content-length'] = old
+		}
 
 		if (this.res instanceof Duplex) {
 			this.res.write(`HTTP/1.1 ${this.statusCode} ${this.statusMessage}\r\n`)
@@ -106,11 +110,11 @@ export class HttpContext extends ImplementationHttpContext {
 				}
 			}
 
-			if (!this.getCompression() && data instanceof ArrayBuffer) this.res.write(`content-length: ${data.byteLength}\r\n\r\n`)
+			if (!this.getCompression() && data instanceof ArrayBuffer && this.method() !== 'HEAD') this.res.write(`content-length: ${data.byteLength}\r\n\r\n`)
 
 			this.res.write('\r\n')
 		} else {
-			if (compressed instanceof Buffer) this.responseHeaders['content-length'] = [ compressed.byteLength.toString() ]
+			if (compressed instanceof Buffer && this.method() !== 'HEAD') this.responseHeaders['content-length'] = [ compressed.byteLength.toString() ]
 
 			this.res.writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
 		}
@@ -127,7 +131,13 @@ export class HttpContext extends ImplementationHttpContext {
 
 	public writeFile(file: string, start?: number, end?: number): void {
 		this.compressionHeader(true)
-		delete this.responseHeaders['content-length']
+		if (this.getCompression()) delete this.responseHeaders['content-length']
+
+		if (this.responseHeaders['content-length']) {
+			const old = this.responseHeaders['content-length']
+			delete this.responseHeaders['content-length']
+			this.responseHeaders['content-length'] = old
+		}
 
 		if (this.res instanceof Duplex) {
 			this.res.cork()

@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@rjweb/utils':
-    specifier: ^1.12.12
-    version: 1.12.12
+    specifier: ^1.12.13
+    version: 1.12.13
   bufferutil:
     specifier: ^4.0.8
     version: 4.0.8
@@ -17,14 +17,14 @@ dependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^20.12.7
-    version: 20.12.7
+    specifier: ^20.12.11
+    version: 20.12.11
   '@types/ws':
     specifier: ^8.5.10
     version: 8.5.10
   rjweb-server:
-    specifier: ^9.2.6
-    version: 9.2.6
+    specifier: ^9.5.0
+    version: 9.5.0
   tsc-progress:
     specifier: ^1.0.4
     version: 1.0.4(typescript@5.4.5)
@@ -78,8 +78,8 @@ packages:
       call-bind: 1.0.7
     dev: true
 
-  /@rjweb/utils@1.12.12:
-    resolution: {integrity: sha512-5jxouObI8f5G7t7l5kUQwNcdeL7IBZFe47Lzen3/e7WMe8HrvUsPyRj0CXFgZ3l1GaN0b/GkkztnN3Xw317q7A==}
+  /@rjweb/utils@1.12.13:
+    resolution: {integrity: sha512-ukNGxj8LnrV3lXWaQ7xWZiY49rrGgBbK6cpLQqBY2aiIYI0f9O5K/2NMpJ6p+y/scxJYDCm7G4fnSr5eY54r/w==}
     engines: {node: '>=18.0.0'}
     dependencies:
       ts-arithmetic: 0.1.1
@@ -100,8 +100,8 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
-  /@types/node@20.12.7:
-    resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
+  /@types/node@20.12.11:
+    resolution: {integrity: sha512-vDg9PZ/zi+Nqp6boSOT7plNuthRugEKixDv5sFTIpkE89MmNtEArAShI4mxuX2+UrLEe9pxC1vm2cjm9YlWbJw==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -109,7 +109,7 @@ packages:
   /@types/ws@8.5.10:
     resolution: {integrity: sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==}
     dependencies:
-      '@types/node': 20.12.7
+      '@types/node': 20.12.11
     dev: true
 
   /acorn-walk@8.3.2:
@@ -191,7 +191,7 @@ packages:
     engines: {node: '>=6.14.2'}
     requiresBuild: true
     dependencies:
-      node-gyp-build: 4.8.0
+      node-gyp-build: 4.8.1
     dev: false
 
   /call-bind@1.0.7:
@@ -266,6 +266,13 @@ packages:
 
   /concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    dev: true
+
+  /content-disposition@0.5.4:
+    resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
+    engines: {node: '>= 0.6'}
+    dependencies:
+      safe-buffer: 5.2.1
     dev: true
 
   /create-require@1.1.1:
@@ -502,8 +509,8 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /node-gyp-build@4.8.0:
-    resolution: {integrity: sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==}
+  /node-gyp-build@4.8.1:
+    resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
     hasBin: true
     dev: false
 
@@ -584,15 +591,17 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
-  /rjweb-server@9.2.6:
-    resolution: {integrity: sha512-O4RJIjlZYLjyj77pNp9lemrGMFP6wutGjqxoHYvIsRHwj3MG5ID5vNo/mM5lVYUxIXHLA85QE2/qGsfHMk0Yhg==}
+  /rjweb-server@9.5.0:
+    resolution: {integrity: sha512-movxuzitLZq77IUArobrcM/axkwmLeRNed5ClNXQFBagXF7hqtFbzb8lpus4XGfDqmOPhEyf1xaM2bdG09Lhsg==}
+    engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
-      '@rjweb/utils': 1.12.12
+      '@rjweb/utils': 1.12.13
+      content-disposition: 0.5.4
       inquirer: 9.2.20
       openapi3-ts: 4.3.1
       yargs: 17.7.2
-      zod: 3.23.4
+      zod: 3.23.8
     dev: true
 
   /run-async@3.0.0:
@@ -683,7 +692,7 @@ packages:
   /ts-arithmetic@0.1.1:
     resolution: {integrity: sha512-3VqgsRgzaYfj+zKWn+7O66ifHwbOOnT2BoOrHwdEUBz7az0DetoZOS20+juNJh1klgzvWEi2Qxden41pomOUAQ==}
 
-  /ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5):
+  /ts-node@10.9.2(@types/node@20.12.11)(typescript@5.4.5):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -702,7 +711,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.12.7
+      '@types/node': 20.12.11
       acorn: 8.11.3
       acorn-walk: 8.3.2
       arg: 4.1.3
@@ -740,7 +749,7 @@ packages:
       typescript: '>=3.2.2'
     dependencies:
       resolve: 1.22.8
-      ts-node: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+      ts-node: 10.9.2(@types/node@20.12.11)(typescript@5.4.5)
       typescript: 5.4.5
     dev: true
 
@@ -871,6 +880,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /zod@3.23.4:
-    resolution: {integrity: sha512-/AtWOKbBgjzEYYQRNfoGKHObgfAZag6qUJX1VbHo2PRBgS+wfWagEY2mizjfyAPcGesrJOcx/wcl0L9WnVrHFw==}
+  /zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: true
