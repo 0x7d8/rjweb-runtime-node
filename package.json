@@ -1,6 +1,6 @@
 {
   "name": "@rjweb/runtime-node",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "rjweb-server runtime for node using http and ws",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/node": "^20.12.11",
     "@types/ws": "^8.5.10",
-    "rjweb-server": "^9.5.0",
+    "rjweb-server": "^9.5.1",
     "tsc-progress": "^1.0.4",
     "ttsc": "^0.3.1",
     "typedoc": "^0.24.8",

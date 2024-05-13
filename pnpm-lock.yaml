@@ -23,8 +23,8 @@ devDependencies:
     specifier: ^8.5.10
     version: 8.5.10
   rjweb-server:
-    specifier: ^9.5.0
-    version: 9.5.0
+    specifier: ^9.5.1
+    version: 9.5.1
   tsc-progress:
     specifier: ^1.0.4
     version: 1.0.4(typescript@5.4.5)
@@ -410,8 +410,8 @@ packages:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: true
 
-  /inquirer@9.2.20:
-    resolution: {integrity: sha512-SFwJJPS+Ms75NV+wzFBHjirG4z3tzvis31h+9NyH1tqjIu2c7vCavlXILZ73q/nPYy8/aw4W+DNzLH5MjfYXiA==}
+  /inquirer@9.2.21:
+    resolution: {integrity: sha512-c/dwDruM1FtzeISV+xMHm+JZTmhpmgWPEZI2bU3+Fwu5MhbAX0zMHHxj5warNfttE5NUID3aijrFUpDc2yBvcA==}
     engines: {node: '>=18'}
     dependencies:
       '@inquirer/figures': 1.0.1
@@ -591,14 +591,14 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
-  /rjweb-server@9.5.0:
-    resolution: {integrity: sha512-movxuzitLZq77IUArobrcM/axkwmLeRNed5ClNXQFBagXF7hqtFbzb8lpus4XGfDqmOPhEyf1xaM2bdG09Lhsg==}
+  /rjweb-server@9.5.1:
+    resolution: {integrity: sha512-ledTx3oI4kZ5EFNk4gn7LqdC2eH54QKcqpM3a7PnwkhYntrrY8gvcnDpkhoi77CZ7Ol2Ua6VjNttWS1Xe7ONaw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
       '@rjweb/utils': 1.12.13
       content-disposition: 0.5.4
-      inquirer: 9.2.20
+      inquirer: 9.2.21
       openapi3-ts: 4.3.1
       yargs: 17.7.2
       zod: 3.23.8

@@ -26,6 +26,9 @@ export class HttpContext extends ImplementationHttpContext {
 		super()
 
 		req.socket.once('close', () => this.abortController.abort())
+
+		req.on('error', () => {})
+		res.on('error', () => {})
 	}
 
 	public aborted(): AbortSignal {
@@ -91,7 +94,10 @@ export class HttpContext extends ImplementationHttpContext {
 	}
 
 	public async write(data: ArrayBuffer | Readable): Promise<void> {
+		if (this.res.closed) return
 		const compressed = data instanceof ArrayBuffer ? await compressionSync(this.getCompression(), data) : null
+
+		if (this.res.closed) return
 
 		this.res.cork()
 		this.compressionHeader(data instanceof Readable)
@@ -133,6 +139,8 @@ export class HttpContext extends ImplementationHttpContext {
 		this.compressionHeader(true)
 		if (this.getCompression()) delete this.responseHeaders['content-length']
 
+		if (this.res.closed) return
+
 		if (this.responseHeaders['content-length']) {
 			const old = this.responseHeaders['content-length']
 			delete this.responseHeaders['content-length']
@@ -159,7 +167,7 @@ export class HttpContext extends ImplementationHttpContext {
 	}
 
 	public upgrade(data: ImplementationWebsocketData): boolean {
-		if (this.head === null || this.res instanceof ServerResponse || !this.req.headers['sec-websocket-key']) return false
+		if (this.req.closed || this.res.closed || this.head === null || this.res instanceof ServerResponse || !this.req.headers['sec-websocket-key']) return false
 
 		const id = Math.floor(Math.random() * 1000000),
 			headerListener = (headers: string[]) => {
