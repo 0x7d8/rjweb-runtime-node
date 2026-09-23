@@ -4,7 +4,7 @@ import { Duplex, Readable } from "stream"
 import { IncomingMessage, ServerResponse } from "http"
 import * as fs from "fs"
 import { WsContext, subscriberCollection } from "@/contexts/ws"
-import { as } from "@rjweb/utils"
+import { as, number } from "@rjweb/utils"
 import { compressionStream, compressionSync } from "@/functions/compression"
 
 export type Serve = {
@@ -16,23 +16,53 @@ export type Serve = {
 	}
 }
 
+const noop = () => {}
+
+function writeRawHeaders(stream: Duplex, headers: Record<string, string | string[]>): void {
+	for (const key in headers) {
+		const values = headers[key]
+
+		if (typeof values === 'string') stream.write(`${key}: ${values}\r\n`)
+		else for (const value of values) {
+			stream.write(`${key}: ${value}\r\n`)
+		}
+	}
+}
+
 export class HttpContext extends ImplementationHttpContext {
-	private abortController = new AbortController()
+	private abortController: AbortController | null = null
 	private statusCode = 200
 	private statusMessage = 'OK'
-	private responseHeaders: Record<string, string[]> = {}
+	private responseHeaders: Record<string, string | string[]> = {}
 
 	constructor(private req: IncomingMessage, private res: (ServerResponse<IncomingMessage> & { req: IncomingMessage }) | Duplex, private server: WebSocketServer, private serve: Serve, private head: Buffer | null) {
 		super()
 
-		req.socket.once('close', () => this.abortController.abort())
-
-		req.on('error', () => {})
-		res.on('error', () => {})
+		res.on('error', noop)
 	}
 
 	public aborted(): AbortSignal {
-		return this.abortController.signal
+		if (this.abortController) return this.abortController.signal
+
+		const controller = new AbortController(), res = this.res
+		this.abortController = controller
+
+		if (this.isAborted()) controller.abort()
+		else if (this.head === null) {
+			res.once('close', () => {
+				if (!res.writableFinished) controller.abort()
+			})
+		} else {
+			res.once('close', () => controller.abort())
+		}
+
+		return controller.signal
+	}
+
+	public isAborted(): boolean {
+		if (this.head === null) return this.res.closed && !this.res.writableFinished
+
+		return this.res.closed
 	}
 
 	public type(): 'http' | 'ws' {
@@ -88,50 +118,53 @@ export class HttpContext extends ImplementationHttpContext {
 	}
 
 	public header(key: string, value: string): this {
-		this.responseHeaders[key] = [ ...this.responseHeaders[key] ?? [], value ]
+		const existing = this.responseHeaders[key]
+
+		if (existing === undefined) this.responseHeaders[key] = value
+		else if (typeof existing === 'string') this.responseHeaders[key] = [ existing, value ]
+		else existing.push(value)
 
 		return this
 	}
 
 	public async write(data: ArrayBuffer | Readable): Promise<void> {
 		if (this.res.closed) return
-		const compressed = data instanceof ArrayBuffer ? await compressionSync(this.getCompression(), data) : null
+
+		const compression = this.getCompression()
+		const compressed = data instanceof ArrayBuffer
+			? compression ? await compressionSync(compression, data) : Buffer.from(data)
+			: null
 
 		if (this.res.closed) return
 
 		this.res.cork()
 		this.compressionHeader(data instanceof Readable)
 
-		if (this.responseHeaders['content-length']) {
+		if (this.responseHeaders['content-length']) { // Make sure content-length is the last header (truly cursed)
 			const old = this.responseHeaders['content-length']
 			delete this.responseHeaders['content-length']
 			this.responseHeaders['content-length'] = old
 		}
 
-		if (this.res instanceof Duplex) {
+		if (this.head !== null) {
 			this.res.write(`HTTP/1.1 ${this.statusCode} ${this.statusMessage}\r\n`)
-			for (const [ key, values ] of Object.entries(this.responseHeaders)) {
-				for (const value of values) {
-					this.res.write(`${key}: ${value}\r\n`)
-				}
-			}
+			writeRawHeaders(as<Duplex>(this.res), this.responseHeaders)
 
-			if (!this.getCompression() && data instanceof ArrayBuffer && this.method() !== 'HEAD') this.res.write(`content-length: ${data.byteLength}\r\n\r\n`)
+			if (!compression && data instanceof ArrayBuffer && this.method() !== 'HEAD') this.res.write(`content-length: ${data.byteLength}\r\n`)
 
 			this.res.write('\r\n')
 		} else {
-			if (compressed instanceof Buffer && this.method() !== 'HEAD') this.responseHeaders['content-length'] = [ compressed.byteLength.toString() ]
+			if (compressed !== null && this.method() !== 'HEAD') this.responseHeaders['content-length'] = compressed.byteLength.toString()
 
-			this.res.writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
+			as<ServerResponse>(this.res).writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
 		}
 
 		this.res.uncork()
-		this.req.socket.removeAllListeners('close')
 
-		if (compressed instanceof Buffer) {
+		if (compressed !== null) {
 			this.res.end(compressed)
 		} else {
-			compressionStream(this.getCompression(), data as Readable, this.res)
+			compressionStream(compression, data as Readable, this.res)
 		}
 	}
 
@@ -141,40 +174,38 @@ export class HttpContext extends ImplementationHttpContext {
 
 		if (this.res.closed) return
 
-		if (this.responseHeaders['content-length']) {
+		if (this.responseHeaders['content-length']) { // Make sure content-length is the last header (truly cursed)
 			const old = this.responseHeaders['content-length']
 			delete this.responseHeaders['content-length']
 			this.responseHeaders['content-length'] = old
 		}
 
-		if (this.res instanceof Duplex) {
+		if (this.head !== null) {
 			this.res.cork()
 			this.res.write(`HTTP/1.1 ${this.statusCode} ${this.statusMessage}\r\n`)
-			for (const [ key, values ] of Object.entries(this.responseHeaders)) {
-				for (const value of values) {
-					this.res.write(`${key}: ${value}\r\n`)
-				}
-			}
+			writeRawHeaders(as<Duplex>(this.res), this.responseHeaders)
 
 			this.res.write('\r\n')
 			this.res.uncork()
 		} else {
-			this.res.writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
+			as<ServerResponse>(this.res).writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
 		}
 
-		this.req.socket.removeAllListeners('close')
 		compressionStream(this.getCompression(), fs.createReadStream(file, { start, end }), this.res)
 	}
 
 	public upgrade(data: ImplementationWebsocketData): boolean {
 		if (this.req.closed || this.res.closed || this.head === null || this.res instanceof ServerResponse || !this.req.headers['sec-websocket-key']) return false
 
-		const id = Math.floor(Math.random() * 1000000),
+		const id = number.generate(0, 1000000),
 			headerListener = (headers: string[]) => {
 				if (as<{ ID: number }>(this.req).ID !== id) return
 		
-				for (const [ key, values ] of Object.entries(this.responseHeaders)) {
-					for (const value of values) {
+				for (const key in this.responseHeaders) {
+					const values = this.responseHeaders[key]
+
+					if (typeof values === 'string') headers.push(`${key}: ${values}`)
+					else for (const value of values) {
 						headers.push(`${key}: ${value}`)
 					}
 				}

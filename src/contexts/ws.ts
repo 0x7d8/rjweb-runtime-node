@@ -26,7 +26,7 @@ export class WsContext extends ImplementationWsContext {
 	}
 
 	public messageType(): 'text' | 'binary' {
-		return typeof this._isBinary ? 'binary' : 'text'
+		return this._isBinary ? 'binary' : 'text'
 	}
 
 

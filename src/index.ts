@@ -69,6 +69,7 @@ export class Runtime extends Implementation {
 		this.serverHttp?.close()
 		this.server = null
 		this.serverHttp = null
+
 		if (this.interval) clearInterval(this.interval)
 	}
 

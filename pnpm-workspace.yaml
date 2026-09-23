@@ -1,0 +1,4 @@
+allowBuilds:
+  bufferutil: true
+minimumReleaseAgeExclude:
+  - rjweb-server@9.9.1
