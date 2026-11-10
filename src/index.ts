@@ -37,7 +37,7 @@ export class Runtime extends Implementation {
 			const server = new Server()
 
 			server.on('request', (req, res) => {
-				const context = new HttpContext(req, res, this.server!, this.serve, null)
+				const context = new HttpContext(req, res, this.server!, this.serve, null, this.options.performance.fileCache !== false)
 
 				return Promise.resolve(this.serve.http(context))
 			})

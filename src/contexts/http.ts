@@ -6,6 +6,7 @@ import * as fs from "fs"
 import { WsContext, subscriberCollection } from "@/contexts/ws"
 import { as, number } from "@rjweb/utils"
 import { compressionStream, compressionSync } from "@/functions/compression"
+import { type CachedFile, type FileStat, getFile, maxFileSize, storeCompressed, storeFile } from "@/functions/fileCache"
 
 export type Serve = {
 	http: (context: HttpContext) => Promise<void>,
@@ -17,6 +18,7 @@ export type Serve = {
 }
 
 const noop = () => {}
+const fromObject: (<Key extends PropertyKey, Value>(data: Record<Key, Value>) => ValueCollection<Key, Value>) | undefined = as<any>(ValueCollection).fromObject
 
 function writeRawHeaders(stream: Duplex, headers: Record<string, string | string[]>): void {
 	for (const key in headers) {
@@ -35,7 +37,7 @@ export class HttpContext extends ImplementationHttpContext {
 	private statusMessage = 'OK'
 	private responseHeaders: Record<string, string | string[]> = {}
 
-	constructor(private req: IncomingMessage, private res: (ServerResponse<IncomingMessage> & { req: IncomingMessage }) | Duplex, private server: WebSocketServer, private serve: Serve, private head: Buffer | null) {
+	constructor(private req: IncomingMessage, private res: (ServerResponse<IncomingMessage> & { req: IncomingMessage }) | Duplex, private server: WebSocketServer, private serve: Serve, private head: Buffer | null, private fileCache: boolean = true) {
 		super()
 
 		res.on('error', noop)
@@ -107,7 +109,7 @@ export class HttpContext extends ImplementationHttpContext {
 	}
 
 	public getHeaders(): ValueCollection<string, string> {
-		return new ValueCollection(this.req.headers as any)
+		return fromObject ? fromObject(this.req.headers as any) : new ValueCollection(this.req.headers as any)
 	}
 
 	public status(code: number, message: string): this {
@@ -131,13 +133,18 @@ export class HttpContext extends ImplementationHttpContext {
 		if (this.res.closed) return
 
 		const compression = this.getCompression()
-		const compressed = data instanceof ArrayBuffer
-			? compression ? await compressionSync(compression, data) : Buffer.from(data)
-			: null
+		let compressed: Buffer | null = null
 
-		if (this.res.closed) return
+		if (data instanceof ArrayBuffer) {
+			const result = compressionSync(compression, data)
 
-		this.res.cork()
+			if (Buffer.isBuffer(result)) compressed = result
+			else {
+				compressed = await result
+				if (this.res.closed) return
+			}
+		}
+
 		this.compressionHeader(data instanceof Readable)
 
 		if (this.responseHeaders['content-length']) { // Make sure content-length is the last header (truly cursed)
@@ -147,19 +154,19 @@ export class HttpContext extends ImplementationHttpContext {
 		}
 
 		if (this.head !== null) {
+			this.res.cork()
 			this.res.write(`HTTP/1.1 ${this.statusCode} ${this.statusMessage}\r\n`)
 			writeRawHeaders(as<Duplex>(this.res), this.responseHeaders)
 
 			if (!compression && data instanceof ArrayBuffer && this.method() !== 'HEAD') this.res.write(`content-length: ${data.byteLength}\r\n`)
 
 			this.res.write('\r\n')
+			this.res.uncork()
 		} else {
 			if (compressed !== null && this.method() !== 'HEAD') this.responseHeaders['content-length'] = compressed.byteLength.toString()
 
 			as<ServerResponse>(this.res).writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
 		}
-
-		this.res.uncork()
 
 		if (compressed !== null) {
 			this.res.end(compressed)
@@ -168,7 +175,66 @@ export class HttpContext extends ImplementationHttpContext {
 		}
 	}
 
-	public writeFile(file: string, start?: number, end?: number): void {
+	private writeCachedFile(file: string, entry: CachedFile): void {
+		const compression = this.getCompression()
+
+		if (compression) {
+			const cached = entry[compression]
+
+			if (!cached) {
+				const result = compressionSync(compression, entry.data)
+
+				if (Buffer.isBuffer(result)) storeCompressed(file, entry, compression, result)
+				else {
+					result.then((compressed) => {
+						storeCompressed(file, entry, compression, compressed)
+						this.endFile(compressed)
+					}, () => this.res.destroy())
+
+					return
+				}
+			}
+
+			return this.endFile(entry[compression] ?? entry.data)
+		}
+
+		this.endFile(entry.data)
+	}
+
+	private endFile(data: Buffer): void {
+		if (this.res.closed) return
+
+		this.compressionHeader(false)
+
+		delete this.responseHeaders['content-length']
+		this.responseHeaders['content-length'] = data.byteLength.toString()
+
+		as<ServerResponse>(this.res).writeHead(this.statusCode, this.statusMessage, this.responseHeaders)
+		this.res.end(data)
+	}
+
+	public writeFile(file: string, start?: number, end?: number, stat?: FileStat): void {
+		if (stat && this.fileCache && this.head === null && stat.size <= maxFileSize && !start && (end === undefined || end === stat.size)) {
+			const cached = getFile(file, stat)
+			if (cached) return this.writeCachedFile(file, cached)
+
+			fs.readFile(file, (err, data) => {
+				if (err) {
+					this.res.destroy()
+					return
+				}
+
+				if (data.byteLength !== stat.size) {
+					this.compress(null)
+					return this.endFile(data)
+				}
+
+				this.writeCachedFile(file, storeFile(file, stat, data))
+			})
+
+			return
+		}
+
 		this.compressionHeader(true)
 		if (this.getCompression()) delete this.responseHeaders['content-length']
 
